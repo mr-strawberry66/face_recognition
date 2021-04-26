@@ -1,2 +1,4 @@
-# face_recognition
-An attempt at writing some python to recognise faces
+# Facial recognition software
+_(version 0.1)_
+
+This is a repository 
