@@ -1,2 +1,7 @@
+# Unix
 export PORT=
-export ACCURACY_OFFSET=50
+export ACCURACY_OFFSET="50"
+
+# Windows
+$Env:PORT=""
+$Env:ACCURACY_OFFSET="50"
