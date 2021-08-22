@@ -1,5 +1,6 @@
 import cv2
 import os
+import time
 from serial import Serial
 
 OFFSET = int(os.environ["ACCURACY_OFFSET"])
@@ -68,6 +69,7 @@ while True:
         else:
             print("Height centered")
             ARDUINO.write(bytes("0", "utf-8"))
+        time.sleep(0.05)
 
         if int(rect_center_x) >= int(center_width) + OFFSET:
             print("Too far left")
@@ -80,6 +82,7 @@ while True:
         else:
             print("Width centered")
             ARDUINO.write(bytes("0", "utf-8"))
+        time.sleep(0.05)
 
     cv2.imshow("Faces", img)
 
