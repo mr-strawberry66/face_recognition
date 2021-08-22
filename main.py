@@ -1,7 +1,12 @@
 import cv2
 import os
+from serial import Serial
 
-OFFSET = 50
+OFFSET = os.environ["ACCURACY_OFFSET"]
+PORT = os.environ["PORT"]
+
+ARDUINO = Serial(port=PORT, baudrate=115200, timeout=0.1)
+
 CASCADE_PATH = os.path.join("resources", "haarcascade_frontalface_default.xml")
 CASCADE = cv2.CascadeClassifier(CASCADE_PATH)
 
@@ -54,21 +59,27 @@ while True:
 
         if int(rect_center_y) >= int(center_height) + OFFSET:
             print("Too low")
+            ARDUINO.write(bytes("1", "utf-8"))
 
         elif int(rect_center_y) <= int(center_height) - OFFSET:
             print("Too high")
+            ARDUINO.write(bytes("2", "utf-8"))
 
         else:
             print("Height centered")
+            ARDUINO.write(bytes("0", "utf-8"))
 
         if int(rect_center_x) >= int(center_width) + OFFSET:
             print("Too far left")
+            ARDUINO.write(bytes("3", "utf-8"))
 
         if int(rect_center_x) <= int(center_width) - OFFSET:
             print("Too far right")
+            ARDUINO.write(bytes("4", "utf-8"))
 
         else:
             print("Width centered")
+            ARDUINO.write(bytes("0", "utf-8"))
 
     cv2.imshow("Faces", img)
 
