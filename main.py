@@ -2,7 +2,7 @@ import cv2
 import os
 from serial import Serial
 
-OFFSET = os.environ["ACCURACY_OFFSET"]
+OFFSET = int(os.environ["ACCURACY_OFFSET"])
 PORT = os.environ["PORT"]
 
 ARDUINO = Serial(port=PORT, baudrate=115200, timeout=0.1)
