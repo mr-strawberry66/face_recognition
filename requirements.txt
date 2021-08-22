@@ -1,1 +1,2 @@
-opencv-contrib-python-4.5.3.56
+opencvopencv-contrib-python==4.5.3.56
+pyserial==3.5
