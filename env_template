@@ -1,7 +1,0 @@
-# Unix
-export PORT=
-export ACCURACY_OFFSET="50"
-
-# Windows
-$Env:PORT="COM3"
-$Env:ACCURACY_OFFSET="50"
