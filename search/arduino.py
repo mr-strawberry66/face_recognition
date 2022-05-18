@@ -1,4 +1,4 @@
-"""Manage connection and interfacing with Arduino"""
+"""Manage connection and interfacing with Arduino."""
 from __future__ import annotations
 
 from serial import Serial
@@ -11,7 +11,7 @@ class Arduino:
         self,
         port: str,
         baudrate: int = 115200,
-        timeout: int = 0.1,
+        timeout: float = 0.1,
     ) -> Arduino:
         """
         # Arduino.
@@ -67,39 +67,32 @@ class Arduino:
 
             w: int
                 The camera centerpoint's width.
+
+            offset: int
+                The ammount of padding in pixels
+                to allow for the Arduino to consider
+                the object centered.
         """
-        if int(y) >= int(h) + offset and int(x) >= int(w) + offset:
-            # Too low and too far left
-            self.write("1")
+        directions = ""
 
-        elif int(y) >= int(h) + offset and int(x) <= int(w) - offset:
-            # Too low and too far right
-            self.write("2")
-
-        elif int(y) <= int(h) - offset and int(x) >= int(w) + offset:
-            # Too high and too far left
-            self.write("3")
-
-        elif int(y) <= int(h) - offset and int(x) <= int(w) - offset:
-            # Too high and too far right
-            self.write("4")
-
-        elif int(y) >= int(h) + offset:
-            # Too low
-            self.write("5")
-
-        elif int(y) <= int(h) - offset:
-            # Too high
-            self.write("6")
-
-        elif int(x) >= int(w) + offset:
-            # Too far left
-            self.write("7")
-
-        elif int(x) <= int(w) - offset:
+        if x <= w - offset:
             # Too far right
-            self.write("8")
+            directions += "L"
+
+        if x >= w + offset:
+            # Too far left
+            directions += "R"
+
+        if y <= h - offset:
+            # Too high
+            directions += "U"
+
+        if y >= h + offset:
+            # Too low
+            directions += "D"
 
         else:
             # Centered
-            self.write("0")
+            directions = "C"
+
+        self.write(directions)
