@@ -23,10 +23,15 @@ void setup() {
 }
 
 
-void interpretDirections(
-    const std::string &directions, int &x_position, int &y_position
-) {
-    for (const char item : directions) {
+void loop() {
+    while (!Serial.available());
+    // Read servo positions
+    x_position = servo_x.read();
+    y_position = servo_y.read();
+
+    directions = Serial.readString();
+
+    for (char item : directions) {
         if (item == 'U') {
             y_position += MOVEMENT_AMOUNT;
             servo_y.write(y_position);
@@ -44,15 +49,4 @@ void interpretDirections(
             servo_x.write(x_position);
         }
     }
-}
-
-void loop() {
-    while (!Serial.available());
-    // Read servo positions
-    x_position = servo_x.read();
-    y_position = servo_y.read();
-
-    directions = Serial.readString();
-
-    interpretDirections(directions, x_position, y_position);
 }
