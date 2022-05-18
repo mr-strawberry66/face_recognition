@@ -178,7 +178,13 @@ class Search(SimpleRepr):
                         offset=self.config.offset,
                     )
 
+            if not stream:
+                break
+
             if cv2.waitKey(1) & 0xFF == ord("q"):
                 break
+
+        if self.config.image.use:
+            cv2.waitKey(0)
 
         cv2.destroyAllWindows()

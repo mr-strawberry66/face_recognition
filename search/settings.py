@@ -113,7 +113,6 @@ class Config(SimpleRepr):
 
         if not settings.file_exists():
             settings.create_default()
-            return cls(**settings.defaults)
 
         return cls(**settings.load())
 
@@ -160,12 +159,12 @@ class Settings(SimpleRepr):
         with open(self.path, "w") as file:
             yaml.dump(self.defaults, file)
 
-    def load(self) -> dict[str, str | int]:
+    def load(self) -> dict[str, str | int | dict[str, str | int | bool]]:
         """Load the config file."""
         with open(self.path, "r") as file:
             data = yaml.safe_load(file)
 
-        if not self._valid_data(data):
+        if not self._is_valid(data):
             self._replace_invalid()
             return self.defaults
 
@@ -176,7 +175,7 @@ class Settings(SimpleRepr):
         os.remove(self.path)
         self.create_default()
 
-    def _valid_data(self, data) -> bool:
+    def _is_valid(self, data) -> bool:
         """Test if loaded data is valid."""
         if not data:
             return False
