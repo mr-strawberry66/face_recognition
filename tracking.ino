@@ -1,13 +1,12 @@
 #include <Servo.h>
-#include <string.h>
 
 Servo servo_x;
 Servo servo_y;
 
-int MOVEMENT_AMOUNT = 1;
+int MOVEMENT_AMOUNT = 10;
 int x_position, y_position;
 
-std::string directions;
+String directions;
 
 
 void setup() {
@@ -30,14 +29,15 @@ void loop() {
     y_position = servo_y.read();
 
     directions = Serial.readString();
+    Serial.println(directions);
 
     for (char item : directions) {
         if (item == 'U') {
-            y_position += MOVEMENT_AMOUNT;
+            y_position -= MOVEMENT_AMOUNT;
             servo_y.write(y_position);
         }
         if (item == 'D') {
-            y_position -= MOVEMENT_AMOUNT;
+            y_position += MOVEMENT_AMOUNT;
             servo_y.write(y_position);
         }
         if (item == 'L') {

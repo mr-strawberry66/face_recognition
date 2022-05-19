@@ -75,24 +75,20 @@ class Arduino:
         """
         directions = ""
 
-        if x <= w - offset:
-            # Too far right
-            directions += "L"
-
-        if x >= w + offset:
+        if x < w - offset:
             # Too far left
             directions += "R"
 
+        elif x > w + offset:
+            # Too far right
+            directions += "L"
+
         if y <= h - offset:
-            # Too high
+            # Too low
             directions += "U"
 
-        if y >= h + offset:
-            # Too low
+        elif y > h + offset:
+            # Too high
             directions += "D"
-
-        else:
-            # Centered
-            directions = "C"
 
         self.write(directions)

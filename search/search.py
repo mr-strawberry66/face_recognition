@@ -62,9 +62,9 @@ class Search(SimpleRepr):
                 center point of the
                 screen or not.
         """
-        (ch, cw) = image.shape[:2]
-        self.center_height = ch // 2
-        self.center_width = cw // 2
+        (screen_height, screen_width) = image.shape[:2]
+        self.center_height = screen_height // 2
+        self.center_width = screen_width // 2
 
         if draw_center:
             cv2.circle(
@@ -94,7 +94,7 @@ class Search(SimpleRepr):
         self,
         image: cv2.Mat,
         draw_center: bool = False,
-    ) -> None:
+    ) -> list[tuple[int, int]]:
         """
         Highlight all objects found in an image on screen.
 
@@ -105,6 +105,10 @@ class Search(SimpleRepr):
             draw_center:
                 Whether to draw the center point of each
                 object found on screen or not.
+
+        Returns:
+            The centerpoint of each object's x and y
+            coordinates on the screen.
         """
         object_coordinates = []
 
@@ -128,7 +132,7 @@ class Search(SimpleRepr):
                     color=(0, 0, 255),
                     thickness=-1,
                 )
-            object_coordinates.append((x, y))
+            object_coordinates.append((rect_center_x, rect_center_y))
 
         cv2.imshow("Detection", image)
         return object_coordinates
