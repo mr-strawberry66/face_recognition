@@ -157,6 +157,10 @@ class Search(SimpleRepr):
             draw_centers: bool
                 Whether to draw the centerpoint of the
                 screen, and center points of each object.
+
+        Raises: ValueError
+            If the config file says to use more than
+            one media type.
         """
         if self.config.camera.use and self.config.image.use:
             raise ValueError("Cannot use both camera and image.")
