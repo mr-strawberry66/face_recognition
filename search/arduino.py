@@ -49,7 +49,7 @@ class Arduino:
         h: int,
         w: int,
         offset: int,
-    ) -> None:
+    ) -> str:
         """
         Aim the Arduino mounted camera.
 
@@ -72,6 +72,9 @@ class Arduino:
                 The ammount of padding in pixels
                 to allow for the Arduino to consider
                 the object centered.
+
+        Returns: str
+            The directions sent to the Arduino.
         """
         directions = ""
 
@@ -92,3 +95,4 @@ class Arduino:
             directions += "D"
 
         self.write(directions)
+        return directions

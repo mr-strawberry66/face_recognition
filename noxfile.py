@@ -18,3 +18,11 @@ def reformat(session):
     """Format using black."""
     session.install("black")
     session.run("black", ".")
+
+
+@nox.session
+def test(session):
+    """Run tests."""
+    session.install("pytest", "pytest-cov")
+    session.install("-r", "requirements.txt")
+    session.run("pytest", "search", "--cov")

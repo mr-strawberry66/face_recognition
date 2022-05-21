@@ -111,7 +111,7 @@ class Config(SimpleRepr):
         """
         settings = Settings(path=path)
 
-        if not settings.file_exists():
+        if not settings.file_exists:
             settings.create_default()
 
         return cls(**settings.load())
@@ -150,6 +150,7 @@ class Settings(SimpleRepr):
             },
         }
 
+    @property
     def file_exists(self) -> bool:
         """Return whether the config file exists or not."""
         return os.path.exists(self.path)

@@ -132,7 +132,9 @@ class Search(SimpleRepr):
                     color=(0, 0, 255),
                     thickness=-1,
                 )
-            object_coordinates.append((rect_center_x, rect_center_y))
+            object_coordinates.append(
+                (rect_center_x, rect_center_y),
+            )
 
         cv2.imshow("Detection", image)
         return object_coordinates
@@ -145,6 +147,63 @@ class Search(SimpleRepr):
             stream = self._initialise_camera()
 
         return stream
+
+    def _set_image(self) -> cv2.Mat | None:
+        """Set an image if the user has chosen to use an image."""
+        image = None
+
+        if self.config.image.use:
+            image = cv2.imread(self.config.image.path)
+
+        return image
+
+    def _iterate_objects(
+        self,
+        image: Optional[cv2.Mat] = None,
+        stream: Optional[cv2.VideoCapture] = None,
+        draw_center: bool = False,
+    ) -> None:
+        """
+        Iterate over objects found in an image or video stream.
+
+        Args:
+            image: Optional[cv2.Mat]
+                An image to search for objects.
+
+            stream: Optional[cv2.VideoCapture]
+                A video stream to search for objects.
+
+            draw_center: bool
+                Whether to draw the centerpoint of the
+                screen, and center points of each object.
+
+        Raises: ValueError
+            If more than one media type is passed in.
+        """
+        if image is None and stream is None:
+            raise ValueError("No image or stream provided.")
+
+        while True:
+            if stream:
+                _, image = stream.read()
+
+            objects = self._draw_objects(
+                image=image,
+                draw_center=draw_center,
+            )
+
+            if self.arduino:
+                for (rect_center_x, rect_center_y) in objects:
+                    self.arduino.aim(
+                        x=rect_center_x,
+                        y=rect_center_y,
+                        h=self.center_height,
+                        w=self.center_width,
+                        offset=self.config.offset,
+                    )
+
+            if not stream or cv2.waitKey(1) & 0xFF == ord("q"):
+                break
 
     def run(self, draw_centers: bool = False) -> None:
         """
@@ -166,31 +225,13 @@ class Search(SimpleRepr):
             raise ValueError("Cannot use both camera and image.")
 
         stream = self._set_stream()
+        image = self._set_image()
 
-        if self.config.image.use:
-            image = cv2.imread(self.config.image.path)
-
-        while True:
-            if stream:
-                _, image = stream.read()
-
-            objects = self._draw_objects(image, draw_center=draw_centers)
-
-            if self.arduino:
-                for (rect_center_x, rect_center_y) in objects:
-                    self.arduino.aim(
-                        x=rect_center_x,
-                        y=rect_center_y,
-                        h=self.center_height,
-                        w=self.center_width,
-                        offset=self.config.offset,
-                    )
-
-            if not stream:
-                break
-
-            if cv2.waitKey(1) & 0xFF == ord("q"):
-                break
+        self._iterate_objects(
+            image=image,
+            stream=stream,
+            draw_center=draw_centers,
+        )
 
         if self.config.image.use:
             cv2.waitKey(0)
