@@ -1,7 +1,7 @@
 """Module for searching for objects within a stream."""
-from serial.serialutil import SerialException
-
 from search import Arduino, Config, RaspberryPi, Search
+
+from serial.serialutil import SerialException
 
 
 def main(path: str):
