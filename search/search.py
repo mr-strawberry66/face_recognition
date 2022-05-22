@@ -7,13 +7,19 @@ import cv2
 from simple_repr import SimpleRepr
 
 from .arduino import Arduino
+from .raspberry_pi import RaspberryPi
 from .settings import Config
 
 
 class Search(SimpleRepr):
     """Search a stream for objects."""
 
-    def __init__(self, config: Config, arduino: Optional[Arduino] = None) -> Search:
+    def __init__(
+        self,
+        config: Config,
+        arduino: Optional[Arduino] = None,
+        ras_pi: Optional[RaspberryPi] = None,
+    ) -> Search:
         """
         # Search.
 
@@ -30,6 +36,7 @@ class Search(SimpleRepr):
                 an Arduino microcontroller.
         """
         self.arduino = arduino
+        self.ras_pi = ras_pi
         self.config = config
         self.center_height = 0
         self.center_width = 0
@@ -192,9 +199,18 @@ class Search(SimpleRepr):
                 draw_center=draw_center,
             )
 
-            if self.arduino:
-                for (rect_center_x, rect_center_y) in objects:
+            for (rect_center_x, rect_center_y) in objects:
+                if self.arduino:
                     self.arduino.aim(
+                        x=rect_center_x,
+                        y=rect_center_y,
+                        h=self.center_height,
+                        w=self.center_width,
+                        offset=self.config.offset,
+                    )
+
+                if self.ras_pi:
+                    self.ras_pi.aim(
                         x=rect_center_x,
                         y=rect_center_y,
                         h=self.center_height,

@@ -1,7 +1,7 @@
 """Module for searching for objects within a stream."""
-from search import Arduino, Config, Search
-
 from serial.serialutil import SerialException
+
+from search import Arduino, Config, RaspberryPi, Search
 
 
 def main(path: str):
@@ -13,13 +13,19 @@ def main(path: str):
     """
     config = Config.from_file(path)
     arduino = None
+    raspberry_pi = None
 
     try:
         arduino = Arduino(port=config.port)
     except SerialException:
         print("Could not connect to Arduino.\nRunning without connection.")
 
-    Search(arduino=arduino, config=config).run()
+    try:
+        raspberry_pi = RaspberryPi(14, 15)
+    except RuntimeError:
+        print("Not running on a RPi")
+
+    Search(arduino=arduino, ras_pi=raspberry_pi, config=config).run()
 
 
 if __name__ == "__main__":
